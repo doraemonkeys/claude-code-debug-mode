@@ -37,7 +37,8 @@ All debug logs MUST use **absolute path** `{project_root}/.claude/debug.log` (re
 1. Create the `.claude/` directory if needed
 2. **Clear** the debug log
 
-Use file-append APIs (e.g. `fs.appendFileSync`, `open("a")`, `os.OpenFile` with `O_APPEND`).
+Server-side: use file-append APIs (e.g. `fs.appendFileSync`, `open("a")`).
+Browser-side: add a debug API route in dev server, use `fetch` POST to write `debug.log`.
 
 ### Region markers
 
@@ -54,8 +55,9 @@ ALL instrumentation MUST be wrapped in region blocks for clean removal:
 // #endregion DEBUG    (matching closer)
 ```
 
-### Guidelines
+### Logging rules
 
+- **NEVER use `console.log`、`print` or any stdout/stderr output.** All debug output MUST go to `debug.log` — server-side via file-append, browser-side via `fetch` to a debug API endpoint.
 - Log messages include hypothesis number: `[DEBUG H1]`, `[DEBUG H2]`, etc.
 - Log variable states, execution paths, timing, decision points
 - Be minimal — only what's needed to confirm/rule out each hypothesis
@@ -100,7 +102,7 @@ Clear `.claude/debug.log`, ask user to verify the fix works, then **STOP and wai
 
 - **Never skip phases.** Instrument and verify even if you think you know the answer.
 - **Never remove instrumentation before user confirms the fix.**
-- **Always log to `.claude/debug.log`**, not stdout/stderr.
+- **Never use `console.log`、`print` etc.** All debug output goes to `.claude/debug.log` via file-append only.
 - **Always clear the log before each reproduction.**
 - **Always wrap instrumentation in `#region DEBUG` blocks.**
 - **Always wait for the user** after asking them to reproduce.
