@@ -106,4 +106,3 @@ Clear `.claude/debug.log`, ask user to verify the fix works, then **STOP and wai
 - **Always clear the log before each reproduction.**
 - **Always wrap instrumentation in `#region DEBUG` blocks.**
 - **Always wait for the user** after asking them to reproduce.
-- **Keep fixes minimal.** Small diff, not a refactor.
