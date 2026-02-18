@@ -1,6 +1,6 @@
-# Claude Code Debug Mode
+# Debug Mode Skill (Claude Code + Codex)
 
-A hypothesis-driven debugging skill for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Instead of blindly guessing fixes, it instruments your code with runtime logs, generates multiple hypotheses, and iteratively narrows down the root cause — with you in the loop.
+A hypothesis-driven debugging skill for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and Codex. Instead of blindly guessing fixes, it instruments your code with runtime logs, generates multiple hypotheses, and iteratively narrows down the root cause — with you in the loop.
 
 Inspired by [Cursor's Debug Mode](https://www.cursor.com/blog/introducing-debug-mode).
 
@@ -21,7 +21,7 @@ Bug Report → Hypotheses → Instrument Code → Reproduce → Analyze Logs →
 
 ## Install
 
-### One-liner (recommended)
+### One-liner (Claude Code)
 
 ```bash
 # macOS / Linux
@@ -31,28 +31,46 @@ mkdir -p ~/.claude/skills && git clone https://github.com/doraemonkeys/claude-co
 mkdir -p ~/.claude/skills && git clone https://github.com/doraemonkeys/claude-code-debug-mode.git ~/.claude/skills/claude-code-debug-mode
 ```
 
+### One-liner (Codex)
+
+```bash
+# macOS / Linux
+mkdir -p ~/.codex/skills && git clone https://github.com/doraemonkeys/claude-code-debug-mode.git ~/.codex/skills/claude-code-debug-mode
+
+# Windows (Git Bash / MSYS2)
+mkdir -p ~/.codex/skills && git clone https://github.com/doraemonkeys/claude-code-debug-mode.git ~/.codex/skills/claude-code-debug-mode
+```
+
 ### Manual
 
-1. Clone or download this repository into your Claude Code skills directory:
+1. Clone or download this repository into your skills directory:
 
    ```bash
+   # Claude Code (choose one)
    cd ~/.claude/skills
+   # or Codex
+   cd ~/.codex/skills
+
    git clone https://github.com/doraemonkeys/claude-code-debug-mode.git
    ```
 
-2. That's it. Claude Code automatically discovers skills under `~/.claude/skills/`.
+2. That's it. Claude Code and Codex automatically discover skills under `~/.claude/skills/` and `~/.codex/skills/`.
 
 ### Verify installation
 
 ```bash
+# Claude Code
 ls ~/.claude/skills/claude-code-debug-mode/debug-mode/SKILL.md
+
+# Codex
+ls ~/.codex/skills/claude-code-debug-mode/debug-mode/SKILL.md
 ```
 
 If the file exists, you're good to go.
 
 ## Usage
 
-In Claude Code, simply describe a bug and the skill will activate automatically. You can also invoke it explicitly:
+In Claude Code or Codex, simply describe a bug and the skill will activate automatically. You can also invoke it explicitly:
 
 ```
 /debug-mode Something isn't working — the API returns 200 but the data is empty
@@ -64,7 +82,7 @@ Or just describe the problem naturally:
 > The login page shows a blank screen after clicking submit. No errors in the console.
 ```
 
-Claude will follow the structured debug workflow — generating hypotheses, adding instrumentation, and asking you to reproduce the bug at each step.
+The agent will follow the structured debug workflow — generating hypotheses, adding instrumentation, and asking you to reproduce the bug at each step.
 
 ## Key Design Decisions
 
@@ -87,7 +105,11 @@ The `#region DEBUG` markers work with:
 ## Uninstall
 
 ```bash
+# Claude Code
 rm -rf ~/.claude/skills/claude-code-debug-mode
+
+# Codex
+rm -rf ~/.codex/skills/claude-code-debug-mode
 ```
 
 ## License
