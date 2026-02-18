@@ -33,14 +33,13 @@ Include both obvious and non-obvious causes (race conditions, off-by-one, stale 
 
 ### Log file
 
-All debug logs MUST use **absolute path** `{project_root}/.claude/debug.log` (resolve the project root to an absolute path first, never use a relative path — this avoids issues when the process `cwd` differs from the project root). Before each reproduction:
-1. Create the `.claude/` directory if needed
-2. **Clear** the debug log
+Write to **`{project_root}/.claude/debug.log`** using an absolute path.
 
-Server-side: use file-append APIs (e.g. `fs.appendFileSync`, `open("a")`), http server, or similar.
-Browser-side: add a debug API route in server, use `fetch` POST to write `debug.log`.
+**`project_root` = hardcoded constant string** inferred from context (file paths in the conversation). PROHIBITED: `import.meta.dir`, `__dirname`, `process.cwd()`, `Deno.cwd()`, `path.resolve()` or any runtime detection. Exception: remote/CI environments or non-writable local filesystem — use `/tmp/.claude/debug.log` instead.
 
-**Ensure logging works in all environments** (dev/release), not just dev mode.
+Before each reproduction: create `.claude/` if needed, then **clear** the log.
+
+Server-side: file-append API (`fs.appendFileSync`, `open("a")`, etc.). Browser-side: `fetch` POST to a debug API route. **Must work in all environments** (dev/release).
 
 ### Region markers
 
