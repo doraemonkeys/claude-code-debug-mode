@@ -38,7 +38,7 @@ All debug logs MUST use **absolute path** `{project_root}/.claude/debug.log` (re
 2. **Clear** the debug log
 
 Server-side: use file-append APIs (e.g. `fs.appendFileSync`, `open("a")`), http server, or similar.
-Browser-side: add a debug API route in dev server, use `fetch` POST to write `debug.log`.
+Browser-side: add a debug API route in server, use `fetch` POST to write `debug.log`.
 
 **Ensure logging works in all environments** (dev/prod/test/Docker), not just dev mode.
 
