@@ -1,6 +1,6 @@
 ---
 name: Debug Mode
-description: Interactive debugging mode that generates hypotheses, instruments code with runtime logs, and iteratively fixes bugs with human-in-the-loop verification. Use when the user reports a bug, says something isn't working, or asks to debug an issue.
+description: Interactive debugging mode that generates hypotheses, instruments code with runtime logs, and iteratively fixes bugs with human-in-the-loop verification. Use only for hard-to-diagnose bugs where the root cause is unclear — NOT for straightforward errors with obvious fixes.
 ---
 
 # Debug Mode
