@@ -17,7 +17,7 @@ Read the relevant source code. Understand the call chain and data flow.
 
 ## Phase 2: Generate Hypotheses
 
-Generate **3–5 testable hypotheses** as a numbered list:
+Generate **testable hypotheses** as a numbered list:
 
 ```
 Based on my analysis, here are my hypotheses:
