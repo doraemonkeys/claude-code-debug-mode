@@ -24,30 +24,21 @@ Bug Report → Hypotheses → Instrument Code → Reproduce → Analyze Logs →
 ### One-liner (Claude Code)
 
 ```bash
-# macOS / Linux
-mkdir -p ~/.claude/skills && git clone https://github.com/doraemonkeys/claude-code-debug-mode.git ~/.claude/skills/claude-code-debug-mode
-
-# Windows (Git Bash / MSYS2)
+# macOS / Linux / Windows (Git Bash / MSYS2)
 mkdir -p ~/.claude/skills && git clone https://github.com/doraemonkeys/claude-code-debug-mode.git ~/.claude/skills/claude-code-debug-mode
 ```
 
 ### One-liner (Codex)
 
 ```bash
-# macOS / Linux
-mkdir -p ~/.codex/skills && git clone https://github.com/doraemonkeys/claude-code-debug-mode.git ~/.codex/skills/claude-code-debug-mode
-
-# Windows (Git Bash / MSYS2)
+# macOS / Linux / Windows (Git Bash / MSYS2)
 mkdir -p ~/.codex/skills && git clone https://github.com/doraemonkeys/claude-code-debug-mode.git ~/.codex/skills/claude-code-debug-mode
 ```
 
 ### One-liner (Gemini CLI)
 
 ```bash
-# macOS / Linux
-mkdir -p ~/.gemini/skills && git clone https://github.com/doraemonkeys/claude-code-debug-mode.git ~/.gemini/skills/claude-code-debug-mode
-
-# Windows (Git Bash / MSYS2)
+# macOS / Linux / Windows (Git Bash / MSYS2)
 mkdir -p ~/.gemini/skills && git clone https://github.com/doraemonkeys/claude-code-debug-mode.git ~/.gemini/skills/claude-code-debug-mode
 ```
 
