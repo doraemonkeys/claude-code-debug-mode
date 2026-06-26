@@ -26,7 +26,19 @@ Bug Report → Hypotheses → Instrument Code → Reproduce → Analyze Logs →
 ```bash
 # macOS / Linux / Windows (Git Bash / MSYS2)
 mkdir -p ~/.claude/skills && git clone https://github.com/doraemonkeys/claude-code-debug-mode.git ~/.claude/skills/claude-code-debug-mode
+
+# Claude Code discovers skills only ONE directory level under ~/.claude/skills/
+# (it does not recurse), but this repo keeps SKILL.md inside debug-mode/. Lift that
+# folder up one level, otherwise the skill silently won't load:
+mv ~/.claude/skills/claude-code-debug-mode/debug-mode ~/.claude/skills/debug-mode
+rm -rf ~/.claude/skills/claude-code-debug-mode
 ```
+
+> **Why the extra step (Claude only):** Codex and Gemini scan `skills/` recursively, so
+> they find `claude-code-debug-mode/debug-mode/SKILL.md` on their own. Claude Code looks
+> only at the immediate children of `~/.claude/skills/`, so `SKILL.md` must sit exactly one
+> level deep — `~/.claude/skills/debug-mode/SKILL.md`. With the nested path it loads no
+> skill and reports no error, so the gap is easy to miss.
 
 ### One-liner (Codex)
 
@@ -65,11 +77,13 @@ gemini skills install https://github.com/doraemonkeys/claude-code-debug-mode.git
 
 2. That's it. Skills are automatically discovered under `~/.claude/skills/`, `~/.codex/skills/`, and `~/.gemini/skills/`.
 
+   For **Claude Code**, apply the same lift step as the one-liner above — move the inner `debug-mode/` folder up so `SKILL.md` lands at `~/.claude/skills/debug-mode/SKILL.md`. Codex and Gemini need no extra step.
+
 ### Verify installation
 
 ```bash
 # Claude Code
-ls ~/.claude/skills/claude-code-debug-mode/debug-mode/SKILL.md
+ls ~/.claude/skills/debug-mode/SKILL.md
 
 # Codex
 ls ~/.codex/skills/claude-code-debug-mode/debug-mode/SKILL.md
@@ -135,7 +149,7 @@ The `#region DEBUG` markers work with:
 
 ```bash
 # Claude Code
-rm -rf ~/.claude/skills/claude-code-debug-mode
+rm -rf ~/.claude/skills/debug-mode
 
 # Codex
 rm -rf ~/.codex/skills/claude-code-debug-mode
