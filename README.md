@@ -98,6 +98,21 @@ Or just describe the problem naturally:
 
 The agent will follow the structured debug workflow — generating hypotheses, adding instrumentation, and asking you to reproduce the bug at each step.
 
+## Don't Be Too Rigid — It's About Evidence, Not the Recipe
+
+The skill describes one concrete path (write logs to a local `.claude/debug.log` via an absolute path), and that default works for **most** situations. But the workflow isn't a strict ritual — the real core is always the same two things:
+
+1. **Reproduce** the bug.
+2. **Collect evidence** (logs) from that reproduction and hand it back to the agent.
+
+*How* the evidence gets collected and delivered is flexible. As long as the agent ends up with the logs from a real reproduction, the result is identical. A couple of common adaptations:
+
+- **The default local-file path doesn't fit your runtime.** For example, the code runs on a phone (a mobile app), in a remote device, or anywhere it can't write to your project folder. No problem — have it log to a file *on that device*, reproduce there, then copy or paste those logs back to the agent. The transport changed; the workflow didn't.
+
+- **The bug is intermittent / hard to trigger on demand.** You don't have to reproduce while the agent waits. Let the agent add the debug instrumentation up front, then just keep it in place and go about your work. Whenever the bug finally happens, grab the logs and drop them to the agent for analysis. Prepared-and-waiting works just as well as reproduce-on-the-spot.
+
+When the standard flow fits, follow it. When it doesn't, keep the two core steps and adapt the rest — the agent can work with evidence from any source.
+
 ## Key Design Decisions
 
 - **Logs go to `.claude/debug.log`** (absolute path), not stdout/stderr — keeps your terminal clean and avoids context window flooding
