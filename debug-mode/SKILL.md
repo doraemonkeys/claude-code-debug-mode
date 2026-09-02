@@ -33,11 +33,11 @@ Include both obvious and non-obvious causes (race conditions, off-by-one, stale 
 
 ### Log file
 
-Write to **`{project_root}/.claude/debug.log`** using an absolute path.
+Write to **`{project_root}/.agents/debug.log`** using an absolute path.
 
-**`project_root` = hardcoded constant string** inferred from context (file paths in the conversation). PROHIBITED: `import.meta.dir`, `__dirname`, `process.cwd()`, `Deno.cwd()`, `path.resolve()` or any runtime detection. Exception: remote/CI environments or non-writable local filesystem — use `/tmp/.claude/debug.log` instead.
+**`project_root` = hardcoded constant string** inferred from context (file paths in the conversation). PROHIBITED: `import.meta.dir`, `__dirname`, `process.cwd()`, `Deno.cwd()`, `path.resolve()` or any runtime detection. Exception: remote/CI environments or non-writable local filesystem — use `/tmp/.agents/debug.log` instead.
 
-Before each reproduction: create `.claude/` if needed, then **clear** the log.
+Before each reproduction: create `.agents/` if needed. If `.agents/debug.log` exists and is non-empty, **archive it first** (rename to `debug-1.log`, `debug-2.log`, etc., incrementing sequentially) before resetting `debug.log` to empty, preserving historical logs.
 
 Server-side: file-append API (`fs.appendFileSync`, `open("a")`, etc.). Browser-side: `fetch` POST to a debug API route. **Must work in all environments** (dev/release).
 
@@ -83,17 +83,17 @@ Evidence:
 - [H2] Confirmed — [log evidence]
 ```
 
-If inconclusive: new hypotheses → more instrumentation → clear log → ask user to reproduce again.
+If inconclusive: new hypotheses → more instrumentation → archive & reset log → ask user to reproduce again.
 
 ## Phase 5: Generate a Fix
 
 Write a fix. Keep debug instrumentation in place.
 
-Clear `.claude/debug.log`, ask user to verify the fix works, then **STOP and wait**.
+Archive and reset `.agents/debug.log`, ask user to verify the fix works, then **STOP and wait**.
 
 ## Phase 6: Verify & Clean Up
 
-**If fixed:** Remove all `#region DEBUG` blocks and contents (use Grep to find them), delete `.claude/debug.log`, summarize.
+**If fixed:** Remove all `#region DEBUG` blocks and contents (use Grep to find them), delete all `.agents/debug*.log` files (including archived logs), summarize.
 
 **If NOT fixed:** Read new logs, ask what they observed, return to **Phase 2**, iterate.
 
@@ -103,7 +103,7 @@ Clear `.claude/debug.log`, ask user to verify the fix works, then **STOP and wai
 
 - **Never skip phases.** Instrument and verify even if you think you know the answer.
 - **Never remove instrumentation before user confirms the fix.**
-- **Never use `console.log`、`print` etc.** All debug output goes to `.claude/debug.log` via file-append only.
-- **Always clear the log before each reproduction.**
+- **Never use `console.log`、`print` etc.** All debug output goes to `.agents/debug.log` via file-append only.
+- **Always archive existing logs and reset `debug.log` before each reproduction.**
 - **Always wrap instrumentation in `#region DEBUG` blocks.**
 - **Always wait for the user** after asking them to reproduce.
