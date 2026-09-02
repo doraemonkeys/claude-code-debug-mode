@@ -19,7 +19,11 @@ Bug Report → Hypotheses → Instrument Code → Reproduce → Analyze Logs →
 7. **Verify** — You confirm the fix works; if not, the cycle repeats
 8. **Clean up** — Removes all instrumentation, leaving a clean diff
 
-## Install
+## npx One-liner Install
+
+```bash
+npx skills add https://github.com/doraemonkeys/claude-code-debug-mode --skill debug-mode -g
+```
 
 ### One-liner (Claude Code)
 
