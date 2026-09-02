@@ -31,15 +31,20 @@ Include both obvious and non-obvious causes (race conditions, off-by-one, stale 
 
 ## Phase 3: Instrument the Code
 
-### Log file
+### Log file & Evidence Collection
 
-Write to **`{project_root}/.agents/debug.log`** using an absolute path.
+Write to **`{project_root}/.agents/debug.log`** using an absolute path by default.
 
 **`project_root` = hardcoded constant string** inferred from context (file paths in the conversation). PROHIBITED: `import.meta.dir`, `__dirname`, `process.cwd()`, `Deno.cwd()`, `path.resolve()` or any runtime detection. Exception: remote/CI environments or non-writable local filesystem — use `/tmp/.agents/debug.log` instead.
 
 Before each reproduction: create `.agents/` if needed. If `.agents/debug.log` exists and is non-empty, **archive it first** (rename to `debug-1.log`, `debug-2.log`, etc., incrementing sequentially) before resetting `debug.log` to empty, preserving historical logs.
 
 Server-side: file-append API (`fs.appendFileSync`, `open("a")`, etc.). Browser-side: `fetch` POST to a debug API route. **Must work in all environments** (dev/release).
+
+**Adapt for non-standard environments & intermittent bugs (Evidence over Ritual):**
+
+- **Restricted/remote/mobile runtimes:** If the code runs on mobile, embedded, or remote environments that cannot write to the project root, adapt the log destination (e.g. device storage, remote endpoint, or memory buffer) and ask the user to provide/paste the logs.
+- **Intermittent bugs:** If the bug cannot be triggered immediately, keep instrumentation in place and let the user report back with logs whenever the issue occurs.
 
 ### Region markers
 
@@ -103,7 +108,7 @@ Archive and reset `.agents/debug.log`, ask user to verify the fix works, then **
 
 - **Never skip phases.** Instrument and verify even if you think you know the answer.
 - **Never remove instrumentation before user confirms the fix.**
-- **Never use `console.log`、`print` etc.** All debug output goes to `.agents/debug.log` via file-append only.
+- **Never use `console.log`、`print` etc.** Route all debug output to `{project_root}/.agents/debug.log` (or adapt the transport if runtime constraints require it).
 - **Always archive existing logs and reset `debug.log` before each reproduction.**
 - **Always wrap instrumentation in `#region DEBUG` blocks.**
-- **Always wait for the user** after asking them to reproduce.
+- **Always wait for the user** after asking them to reproduce (or when waiting for intermittent occurrences).
