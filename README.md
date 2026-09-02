@@ -13,7 +13,7 @@ Bug Report → Hypotheses → Instrument Code → Reproduce → Analyze Logs →
 1. **Understand** — Gathers context about the bug (expected vs actual behavior, repro steps)
 2. **Hypothesize** — Generates 3–5 testable hypotheses about root causes
 3. **Instrument** — Adds targeted debug logging wrapped in `#region DEBUG` blocks
-4. **Reproduce** — You trigger the bug while logs are collected to `.claude/debug.log`
+4. **Reproduce** — You trigger the bug while logs are collected to `.agents/debug.log`
 5. **Diagnose** — Maps log output to hypotheses, confirms or rules out each one
 6. **Fix** — Writes a minimal, targeted fix (not a refactor)
 7. **Verify** — You confirm the fix works; if not, the cycle repeats
@@ -114,7 +114,7 @@ The agent will follow the structured debug workflow — generating hypotheses, a
 
 ## Don't Be Too Rigid — It's About Evidence, Not the Recipe
 
-The skill describes one concrete path (write logs to a local `.claude/debug.log` via an absolute path), and that default works for **most** situations. But the workflow isn't a strict ritual — the real core is always the same two things:
+The skill describes one concrete path (write logs to a local `.agents/debug.log` via an absolute path), and that default works for **most** situations. But the workflow isn't a strict ritual — the real core is always the same two things:
 
 1. **Reproduce** the bug.
 2. **Collect evidence** (logs) from that reproduction and hand it back to the agent.
@@ -129,7 +129,7 @@ When the standard flow fits, follow it. When it doesn't, keep the two core steps
 
 ## Key Design Decisions
 
-- **Logs go to `.claude/debug.log`** (absolute path), not stdout/stderr — keeps your terminal clean and avoids context window flooding
+- **Logs go to `.agents/debug.log`** (absolute path), not stdout/stderr — keeps your terminal clean and avoids context window flooding
 - **`#region DEBUG` markers** wrap all instrumentation for reliable, automated cleanup
 - **Hypothesis-tagged logs** (`[DEBUG H1]`, `[DEBUG H2]`) map directly back to hypotheses for clear diagnosis
 - **Human-in-the-loop** — the agent never removes instrumentation or declares victory until you confirm the fix
