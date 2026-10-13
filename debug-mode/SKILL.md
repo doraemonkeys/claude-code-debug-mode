@@ -29,6 +29,8 @@ Based on my analysis, here are my hypotheses:
 
 Include both obvious and non-obvious causes (race conditions, off-by-one, stale closures, type coercion, etc.).
 
+Manual reproduction fatigues users—especially after 3+ rounds without finding the root cause. Include sufficiently detailed and reasonable debug information upfront to minimize reproduction cycles.
+
 ## Phase 3: Instrument the Code
 
 ### Log file & Evidence Collection
