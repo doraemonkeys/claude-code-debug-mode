@@ -1,6 +1,6 @@
 ---
 name: debug-mode
-description: Interactive debugging mode that generates hypotheses, instruments code with runtime logs, and iteratively fixes bugs with human-in-the-loop verification. Only for hard-to-diagnose bugs; in those cases, remind the user that debug-mode is available, and never proactively activate this skill.
+description: Interactive debugging mode that generates hypotheses, instruments code with runtime logs, and iteratively fixes bugs via autonomous reproduce-analyze loops, with human help only as a fallback. Only for hard-to-diagnose bugs; in those cases, remind the user that debug-mode is available, and never proactively activate this skill.
 ---
 
 # Debug Mode
@@ -70,11 +70,11 @@ ALL instrumentation MUST be wrapped in region blocks for clean removal:
 - Log variable states, execution paths, timing, decision points
 - Be minimal — only what's needed to confirm/rule out each hypothesis
 
-After instrumenting, tell the user to reproduce the bug, then **STOP and wait**.
+After instrumenting, reproduce the bug yourself when the environment allows (run the failing command, tests, or endpoint). Only if you cannot reproduce it, tell the user how to reproduce, then **STOP and wait**.
 
 ## Phase 4: Analyze Logs & Diagnose
 
-When the user has reproduced:
+When the bug has been reproduced (by you or the user):
 
 1. **Check log file size first** (e.g. `wc -l` or `ls -lh`). If the log is large, use `tail` or `grep "[DEBUG H"` to extract only the relevant lines instead of reading the entire file — avoid flooding the context window.
 2. Map logs to hypotheses — determine which are **confirmed** vs **ruled out**
@@ -90,27 +90,26 @@ Evidence:
 - [H2] Confirmed — [log evidence]
 ```
 
-If inconclusive: new hypotheses → more instrumentation → archive & reset log → ask user to reproduce again.
+If inconclusive: new hypotheses → more instrumentation → archive & reset log → reproduce again yourself; ask the user only when you cannot.
 
 ## Phase 5: Generate a Fix
 
 Write a fix. Keep debug instrumentation in place.
 
-Archive and reset `.agents/debug.log`, ask user to verify the fix works, then **STOP and wait**.
+Archive and reset `.agents/debug.log`, then reproduce again yourself to verify the fix. If you cannot reproduce it yourself, ask the user to verify, then **STOP and wait**.
 
 ## Phase 6: Verify & Clean Up
 
 **If fixed:** Remove all `#region DEBUG` blocks and contents (use Grep to find them), delete all `.agents/debug*.log` files (including archived logs), summarize.
 
-**If NOT fixed:** Read new logs, ask what they observed, return to **Phase 2**, iterate.
+**If NOT fixed:** Read the new logs; ask the user what they observed only if they were the one who reproduced. Return to **Phase 2** and iterate.
 
 ---
 
 ## Rules
 
 - **Never skip phases.** Instrument and verify even if you think you know the answer.
-- **Never remove instrumentation before user confirms the fix.**
+- **Never remove instrumentation until the fix is verified** (by you, or by the user when you cannot reproduce it yourself).
 - **Never use `console.log`、`print` etc.** Route all debug output to `{project_root}/.agents/debug.log` (or adapt the transport if runtime constraints require it).
 - **Always archive existing logs and reset `debug.log` before each reproduction.**
 - **Always wrap instrumentation in `#region DEBUG` blocks.**
-- **Always wait for the user** after asking them to reproduce (or when waiting for intermittent occurrences).

@@ -1,8 +1,8 @@
 # Debug Mode Skill (Claude Code + Codex + Gemini CLI)
 
-A hypothesis-driven debugging skill for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), Codex, and [Gemini CLI](https://github.com/google-gemini/gemini-cli). Instead of blindly guessing fixes, it instruments your code with runtime logs, generates multiple hypotheses, and iteratively narrows down the root cause — with you in the loop.
+A hypothesis-driven debugging skill for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), Codex, and [Gemini CLI](https://github.com/google-gemini/gemini-cli). Instead of blindly guessing fixes, it instruments your code with runtime logs, generates multiple hypotheses, and iteratively narrows down the root cause — driving the reproduce-analyze loop itself, with you as backup when it can't.
 
-Inspired by [Cursor's Debug Mode](https://www.cursor.com/blog/introducing-debug-mode).
+Inspired by [Cursor's Debug Mode](https://cursor.com/en-US/blog/debug-mode).
 
 ## How It Works
 
@@ -13,10 +13,10 @@ Bug Report → Hypotheses → Instrument Code → Reproduce → Analyze Logs →
 1. **Understand** — Gathers context about the bug (expected vs actual behavior, repro steps)
 2. **Hypothesize** — Generates 3–5 testable hypotheses about root causes
 3. **Instrument** — Adds targeted debug logging wrapped in `#region DEBUG` blocks
-4. **Reproduce** — You trigger the bug while logs are collected to `.agents/debug.log`
+4. **Reproduce** — The agent triggers the bug itself when possible (tests, CLI, HTTP); otherwise you trigger it while logs are collected to `.agents/debug.log`
 5. **Diagnose** — Maps log output to hypotheses, confirms or rules out each one
 6. **Fix** — Writes a minimal, targeted fix (not a refactor)
-7. **Verify** — You confirm the fix works; if not, the cycle repeats
+7. **Verify** — The agent re-runs the reproduction to confirm the fix; you verify only when it cannot reproduce itself. If not fixed, the cycle repeats
 8. **Clean up** — Removes all instrumentation, leaving a clean diff
 
 ## npx One-liner Install
@@ -114,14 +114,14 @@ Or just describe the problem naturally:
 > The login page shows a blank screen after clicking submit. No errors in the console.
 ```
 
-The agent will follow the structured debug workflow — generating hypotheses, adding instrumentation, and asking you to reproduce the bug at each step.
+The agent will follow the structured debug workflow — generating hypotheses, adding instrumentation, and running the reproduce-analyze loop itself, asking you to reproduce only when it cannot.
 
 ## Don't Be Too Rigid — It's About Evidence, Not the Recipe
 
 The skill describes one concrete path (write logs to a local `.agents/debug.log` via an absolute path), and that default works for **most** situations. But the workflow isn't a strict ritual — the real core is always the same two things:
 
 1. **Reproduce** the bug.
-2. **Collect evidence** (logs) from that reproduction and hand it back to the agent.
+2. **Collect evidence** (logs) from that reproduction — the agent does this itself when it can, otherwise you hand the logs back.
 
 *How* the evidence gets collected and delivered is flexible. As long as the agent ends up with the logs from a real reproduction, the result is identical. A couple of common adaptations:
 
@@ -136,7 +136,7 @@ When the standard flow fits, follow it. When it doesn't, keep the two core steps
 - **Logs go to `.agents/debug.log`** (absolute path), not stdout/stderr — keeps your terminal clean and avoids context window flooding
 - **`#region DEBUG` markers** wrap all instrumentation for reliable, automated cleanup
 - **Hypothesis-tagged logs** (`[DEBUG H1]`, `[DEBUG H2]`) map directly back to hypotheses for clear diagnosis
-- **Human-in-the-loop** — the agent never removes instrumentation or declares victory until you confirm the fix
+- **Human as fallback** — the agent drives the reproduce-analyze loop itself and asks you in only when it cannot reproduce or collect evidence; instrumentation is never removed until the fix is verified
 
 ## Supported Languages
 
